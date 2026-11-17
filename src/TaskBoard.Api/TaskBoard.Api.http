@@ -1,0 +1,28 @@
+@host = http://localhost:5080
+
+### Create a project
+POST {{host}}/api/projects
+Content-Type: application/json
+
+{ "name": "Software Engineering group project", "description": "Semester 2 assignment" }
+
+### List projects
+GET {{host}}/api/projects
+
+### Add a task to project 1
+POST {{host}}/api/projects/1/tasks
+Content-Type: application/json
+
+{ "title": "Draw the ERD", "owner": "Thabo", "dueDate": "2026-11-30" }
+
+### List project 1s unfinished tasks for Thabo
+GET {{host}}/api/projects/1/tasks?status=Todo&owner=Thabo
+
+### Move task 1 to Done
+PATCH {{host}}/api/tasks/1/status
+Content-Type: application/json
+
+{ "status": "Done" }
+
+### Delete task 1
+DELETE {{host}}/api/tasks/1
