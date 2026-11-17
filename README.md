@@ -49,7 +49,6 @@ PATCH   /api/tasks/{id}/status
 DELETE  /api/tasks/{id}
 ```
 
-You can filter the task list like `?status=Done&owner=Thabo`.
 
 ## What I learned
 
