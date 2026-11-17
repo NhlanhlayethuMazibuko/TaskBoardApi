@@ -411,7 +411,6 @@ FodyWeavers.xsd
 ##
 
 
-# globs
 Makefile.in
 *.userprefs
 *.usertasks
@@ -424,7 +423,6 @@ autom4te.cache/
 tarballs/
 test-results/
 
-# content below from: https://github.com/github/gitignore/blob/main/Global/macOS.gitignore
 # General
 .DS_Store
 .AppleDouble
@@ -434,10 +432,8 @@ test-results/
 Icon
 
 
-# Thumbnails
 ._*
 
-# Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
 .Spotlight-V100
@@ -446,15 +442,12 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
 Network Trash Folder
 Temporary Items
 .apdisk
 
-# content below from: https://github.com/github/gitignore/blob/main/Global/Windows.gitignore
-# Windows thumbnail cache files
 Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
@@ -480,3 +473,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+.github/copilot-instructions.md
