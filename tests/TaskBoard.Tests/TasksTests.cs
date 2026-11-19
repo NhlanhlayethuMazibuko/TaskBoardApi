@@ -187,4 +187,74 @@ public class TasksTests(ApiFactory factory) : IClassFixture<ApiFactory>
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    [Fact]
+    public async Task Create_TrimsTitleAndOwner()
+    {
+        var project = await _client.CreateProjectAsync();
+
+        var task = await _client.CreateTaskAsync(project.Id, "  Spaced out  ", owner: "  Thabo  ");
+
+        Assert.Equal("Spaced out", task.Title);
+        Assert.Equal("Thabo", task.Owner);
+    }
+
+    [Fact]
+    public async Task Create_WithBlankOwner_StoresNoOwner()
+    {
+        var project = await _client.CreateProjectAsync();
+
+        var task = await _client.CreateTaskAsync(project.Id, "Unassigned", owner: "   ");
+
+        Assert.Null(task.Owner);
+    }
+
+    [Fact]
+    public async Task Create_WithTitleOver200Characters_ReturnsBadRequest()
+    {
+        var project = await _client.CreateProjectAsync();
+
+        var response = await _client.PostAsJsonAsync($"/api/projects/{project.Id}/tasks",
+            new { title = new string('x', 201) });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Update_WhenMissing_ReturnsNotFound()
+    {
+        var response = await _client.PutAsJsonAsync("/api/tasks/999999", new { title = "Nobody" });
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Update_WithoutTitle_ReturnsBadRequest()
+    {
+        var project = await _client.CreateProjectAsync();
+        var task = await _client.CreateTaskAsync(project.Id, "Has a title");
+
+        var response = await _client.PutAsJsonAsync($"/api/tasks/{task.Id}", new { owner = "Thabo" });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateStatus_WhenMissing_ReturnsNotFound()
+    {
+        var response = await _client.PatchAsJsonAsync("/api/tasks/999999/status", new { status = "Done" });
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UpdateStatus_WithUnknownStatus_ReturnsBadRequest()
+    {
+        var project = await _client.CreateProjectAsync();
+        var task = await _client.CreateTaskAsync(project.Id, "Stay put");
+
+        var response = await _client.PatchAsJsonAsync($"/api/tasks/{task.Id}/status", new { status = "Finished" });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }

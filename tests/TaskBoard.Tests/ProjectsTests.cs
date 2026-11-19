@@ -115,4 +115,49 @@ public class ProjectsTests(ApiFactory factory) : IClassFixture<ApiFactory>
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
+
+    [Fact]
+    public async Task GetAll_ListsNewestFirst()
+    {
+        var older = await _client.CreateProjectAsync("Older");
+        var newer = await _client.CreateProjectAsync("Newer");
+
+        var projects = await (await _client.GetAsync("/api/projects")).ReadAsync<List<ProjectResponse>>();
+        var ids = projects.Select(p => p.Id).ToList();
+
+        Assert.True(ids.IndexOf(newer.Id) < ids.IndexOf(older.Id));
+    }
+
+    [Fact]
+    public async Task Update_WithBlankName_ReturnsBadRequestAndKeepsOldName()
+    {
+        var created = await _client.CreateProjectAsync("Keep me");
+
+        var response = await _client.PutAsJsonAsync($"/api/projects/{created.Id}", new { name = "" });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var fetched = await (await _client.GetAsync($"/api/projects/{created.Id}")).ReadAsync<ProjectResponse>();
+        Assert.Equal("Keep me", fetched.Name);
+    }
+
+    [Fact]
+    public async Task Update_ReturnsCurrentTaskCount()
+    {
+        var created = await _client.CreateProjectAsync("Busy");
+        await _client.CreateTaskAsync(created.Id, "Only task");
+
+        var response = await _client.PutAsJsonAsync($"/api/projects/{created.Id}", new { name = "Still busy" });
+
+        var project = await response.ReadAsync<ProjectResponse>();
+        Assert.Equal(1, project.TaskCount);
+    }
+
+    [Fact]
+    public async Task Create_WithDescriptionOver500Characters_ReturnsBadRequest()
+    {
+        var response = await _client.PostAsJsonAsync("/api/projects",
+            new { name = "Long", description = new string('x', 501) });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }
