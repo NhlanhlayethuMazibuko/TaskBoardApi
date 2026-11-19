@@ -11,7 +11,7 @@ namespace TaskBoard.Api.Controllers;
 [Produces("application/json")]
 public class ProjectsController(AppDbContext db) : ControllerBase
 {
-    /// List all projects
+    /// <summary>Lists all projects, newest first.</summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<ProjectResponse>>> GetAll()
@@ -22,7 +22,7 @@ public class ProjectsController(AppDbContext db) : ControllerBase
             .ToListAsync();
     }
 
-    /// Get one project by id
+    /// <summary>Get one project by id</summary>
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -36,7 +36,7 @@ public class ProjectsController(AppDbContext db) : ControllerBase
         return project is null ? NotFound() : project;
     }
 
-    /// Create a project
+    /// <summary>Create a project</summary>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -55,7 +55,7 @@ public class ProjectsController(AppDbContext db) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = project.Id }, response);
     }
 
-    /// Edit a project's name and description
+    /// <summary>Edit a project's name and description</summary>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -73,7 +73,7 @@ public class ProjectsController(AppDbContext db) : ControllerBase
         return new ProjectResponse(project.Id, project.Name, project.Description, project.CreatedAt, taskCount);
     }
 
-    /// Delete a project and all of its tasks
+    /// <summary>Delete a project and all of its tasks</summary>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

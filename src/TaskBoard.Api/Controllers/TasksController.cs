@@ -11,7 +11,7 @@ namespace TaskBoard.Api.Controllers;
 [Produces("application/json")]
 public class TasksController(AppDbContext db) : ControllerBase
 {
-    /// Lists a project's tasks, with optional filters
+    /// <summary>Lists a project's tasks, with optional filters</summary>
     [HttpGet("projects/{projectId:int}/tasks")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -33,7 +33,7 @@ public class TasksController(AppDbContext db) : ControllerBase
         return tasks.Select(ToResponse).ToList();
     }
 
-    // Add a task to a project
+    /// <summary>Add a task to a project</summary>
     [HttpPost("projects/{projectId:int}/tasks")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,7 +50,7 @@ public class TasksController(AppDbContext db) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = task.Id }, ToResponse(task));
     }
 
-    /// Get one task by id
+    /// <summary>Get one task by id</summary>
     [HttpGet("tasks/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -60,7 +60,7 @@ public class TasksController(AppDbContext db) : ControllerBase
         return task is null ? NotFound() : ToResponse(task);
     }
 
-    /// Replaces all of a task's details
+    /// <summary>Replaces all of a task's details</summary>
     [HttpPut("tasks/{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -75,7 +75,7 @@ public class TasksController(AppDbContext db) : ControllerBase
         return ToResponse(task);
     }
 
-    /// Move a task to another column without touching its other details
+    /// <summary>Move a task to another column without touching its other details</summary>
     [HttpPatch("tasks/{id:int}/status")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -90,7 +90,7 @@ public class TasksController(AppDbContext db) : ControllerBase
         return ToResponse(task);
     }
 
-    ///  Delete a task
+    /// <summary>Delete a task</summary>
     [HttpDelete("tasks/{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
